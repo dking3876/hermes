@@ -1,0 +1,14 @@
+Continuous Integration Script
+
+	Account: <-a|--account>
+
+	Repo: <-r|--repo>
+
+	Branch: <-b|--branch>
+
+	SrcFolder:<--src>
+
+	Destination: <-d|--dest>
+
+	Use SSH: <-s>
+
