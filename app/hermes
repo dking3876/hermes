@@ -1,65 +1,28 @@
 #!/usr/bin/env bash
-#GIT OR BITBUCKET /OTHER SERVICES LATER
-SERVICE="GIT"
-#ACCOUNT NAME (ie: github.com/dking3876)
-ACCOUNT=""
-#REPO NAME (ie: hermes)
-REPO=""
-#BRANCH (ie: master)
-BRANCH=""
-#TYPE OF DEPLOY (http|ssh)
-TYPE=http
-#FOLDER IN REPO FOR DEPLOYMENT
-SOURCE=""
-#DESIGNATION FOR DEPLOYMENT
-TARGET=""
-#install Cron job
-AUTO=0
-#save config file for running later
-SAVE=0
-#If config flag is set no deployment happens now, only configuration file setup
-CONFIG=0
-#Linux Version to determine if yum or apt-get
-VERSION=$(cat /etc/*-release | grep ID_LIKE | sed -e 's/.*=//')
-#Root for intallation and Hermes applicaiton
-ROOT=/var/opt/hermesdeployment
-#Directory for all deploys (this is where the repos get pulled to before deploying)
-DEPLOYS="$ROOT"/deploys
-#Directory for all logs
-LOGS="$ROOT"/logs
-#Directy for public/private keypairs
-KEYS="$ROOT"/keys
 #LOCATION OF THIS SCRIPT
-SCRIPTDIR=$(dirname $0)
-source "$SCRIPTDIR"/functions.sh
-#parse_yaml "$SCRIPTDIR"/test.yml
-#check if install was passed and folder doesn't exist. Do Installation if both are true
-if [ ! -d "$ROOT" -a $1 = "install" ]
-then
-	/bin/bash "$SCRIPTDIR"/_hinstall.sh $ROOT $DEPLOYS $LOGS $KEYS
-	if [ "$?" = 150 ]
-	then
-		usage
-	fi
-	exit
-fi
-#Generate a keypair 
-if [ "$1" = "keypair" ]
-then
-	genkey $KEYS $2
-	exit;
-fi
-echo "$-"
-#Check if --config flas was passed
-if [[ $* == *--config* ]]
-then
-	#Load existing config file if it exists
-	echo "config file was passed"
-fi
+ROOT=/var/opt/hermesdeployment
+#source enviorment vars
+source "$ROOT"/app/env.conf
+#source function file
+source "$ROOT"/app/functions.sh
+ACTION=$1
+case $ACTION in
+	update) echo "run update";;
+	keygen) genkeys $KEYS $2; exit;;
+	deploy)
+		#Check if --config flas was passed
+		if [[ $* == *--config* ]]
+		then
+			#Load existing config file if it exists
+			echo "config file was passed"
+			#run deployment script using config file
+			exit
+		fi;;
+esac
 #shorthand options
 optsetshort=a:r:b:sS:t:hu:g:
 #longhad options
-optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config
+optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:
 if ! options=$(getopt -o $optsetshort -l $optsetlong -- "$@")
 then 
 	exit 1
@@ -84,7 +47,7 @@ do
 	--report) REPORT="$2" ; shift;;
 	--afterinstall) AFTERINSTALL=$2 ; shift;;
 	--beforeinstall) BEFOREINSTALL=$2 ;shift;;
-	--config) CONFIG=1;;
+	--config) CONFIG=$2 ; shift;;
 	esac
 	shift
 done
@@ -115,14 +78,14 @@ else
 	usage
 	if [ "$ACCOUNT" = "" ]
 	then
-		echo "Error:	-a|--account is required"
+		echo "Error: missing arg <-a|--account>"
 	fi
 	if [ "$REPO" = "" ]
 	then
-		echo "Error:	-r|--repo is required"
+		echo "Error: missing arg <-r|--repo>"
 	fi
 	if [ "$TARGET" = "" ]
 	then
-		echo "Error:	-t|--target is required"
+		echo "Error: missing arg <-t|--target>"
 	fi
 fi

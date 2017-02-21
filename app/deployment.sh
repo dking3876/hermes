@@ -45,7 +45,7 @@ if [ "$res" = "Already up-to-date." ]
 then
 	echo "No recent changes to $REPO" &>> "$LOGS/$ACCOUNT"_"$REPO"
 else
-	echo "Changes to $REPO initiating copy" &>> "$LOGS/$ACCOUNT"_"$REPO"
+	echo "Intializing deployment of $REPO" &>> "$LOGS/$ACCOUNT"_"$REPO"
     if [ ! -d $TARGET ]
     then 
         mkdir $TARGET

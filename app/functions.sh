@@ -1,5 +1,5 @@
 usage() { 
-    echo "Usage: ci_git.sh {Account} {Repo} {Branch} {SrcFolder [optional]} {Destination [optional]}";
+    echo "Usage: hermes [(command)] [options]";
 };
 genkey() {
     KEYDIR=$1
