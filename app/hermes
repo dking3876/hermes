@@ -6,23 +6,10 @@ source "$ROOT"/app/env.conf
 #source function file
 source "$ROOT"/app/functions.sh
 ACTION=$1
-case $ACTION in
-	update) echo "run update";;
-	keygen) genkeys $KEYS $2; exit;;
-	deploy)
-		#Check if --config flas was passed
-		if [[ $* == *--config* ]]
-		then
-			#Load existing config file if it exists
-			echo "config file was passed"
-			#run deployment script using config file
-			exit
-		fi;;
-esac
 #shorthand options
-optsetshort=a:r:b:sS:t:hu:g:
+optsetshort=a:r:b:sS:t:hu:g:f:
 #longhad options
-optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:
+optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:,filename:
 if ! options=$(getopt -o $optsetshort -l $optsetlong -- "$@")
 then 
 	exit 1
@@ -31,7 +18,7 @@ eval set -- $options
 while [ $# -gt 0 ]
 do
 	case $1 in
-	-h|--help) cat "$SCRIPTDIR"/hermes.man ; exit;;
+	-h|--help) cat "$ROOT"/hermes.man ; exit;;
 	-a|--account) ACCOUNT="$2" ; shift;;
 	-r|--repo) REPO=$2 ; shift;;
 	-b|--branch) BRANCH=$2 ; shift;;
@@ -40,6 +27,7 @@ do
 	-t|--target) TARGET=$2 ; shift;;
 	-u|--user) HERMESUSER=$2 ; shift;;
 	-g|--group) GROUP=$2 ; shift;;
+	-f|--filename) FILENAME=$2 ; shift;;
 	--service) SERVICE=$2 ; shift;;
 	--bitbucket) SERVICE="BIT";;
 	--auto) AUTO=1; SAVE=1;;
@@ -51,6 +39,34 @@ do
 	esac
 	shift
 done
+case $ACTION in
+	update) source $ROOT/app/modules/update.sh;;
+	keygen) 
+		if [ "$REPO" != "" ] && [ "$ACCOUNT" != "" ]
+		then
+			source "$ROOT"/app/keygen.sh 
+			exit;
+		fi;;
+	sshconfig)
+		/bin/bash "$ROOT"/app/modules/ssh-startup.sh $KEYS $ROOT/app/modules/ssh-agent.conf;
+		exit;;
+	deploy)
+		#Check if --config flag was passed as account-repo-tag
+		if [[ $* == *--config* ]]
+		then
+			#Load existing config file if it exists
+			echo "config file was passed"
+			#run deployment script using config file
+			if [ -f $DEPLOYMENTCONFIG/$CONFIG.deployment.json ]
+			then
+				configfile=$DEPLOYMENTCONFIG/$CONFIG.deployment.json
+				source $ROOT/app/jq.sh
+			else
+				echo "No configuration file exists @ $DEPLOYMENTCONFIG/$CONFIG.deployment.json"
+				exit;
+			fi
+		fi;;
+esac
 #Check if the required parameters are set.
 if [ "$ACCOUNT" != "" ] && [ "$REPO" != "" ] && [ "$TARGET" != "" ]
 then
@@ -72,7 +88,7 @@ then
 	#If we are either just saving or automating the configuration
 	if [ "$SAVE" = 1 ]
 	then
-		source "$SCRIPTDIR"/setup.sh
+		source "$ROOT"/app/setup.sh
 	fi
 else
 	usage

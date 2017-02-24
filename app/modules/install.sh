@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-echo ""
-echo "Hermes Automated Deployment"
-echo "................................"
+echo "#########################################################"
+echo "##"
+echo "##        Hermes Automated Deployment"
+echo "##"
+echo "#########################################################"
 echo "It does not appear Hermes has been installed."
 per=0
 dest=$1
 orig=$(dirname $0)
-echo "$orig"
 while true; do
     read -p "Would you like to install Hermes now? [y/n] " answer
     case $answer in
@@ -30,6 +31,12 @@ while true; do
             echo "Hermes installation completed";
             #Create symlink to heremes file in the bin path to use everywhere
             ln -sf "$dest"/app/hermes /bin/hermes
+            useradd -M hermes
+            usermod -L hermes
+            chown -R hermes:hermes "$dest"
+            #store ssh-agent header for use for pulls and clones
+            (crontab -l 2>/dev/null; echo "@reboot hermes sshconfig") | crontab -
+            #(crontab -l 2>/dev/null; echo "*/2 * * * * hermes sshconfig") | crontab -
             exit;;
         [Nn]* ) exit 150;;
         * ) echo "Please answer yes or no.";;

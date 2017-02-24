@@ -7,7 +7,7 @@ source "$SCRIPTDIR"/app/env.conf
 #check if install was passed and folder doesn't exist. Do Installation if both are true
 if [ ! -d "$ROOT" -a $1 = "install" ]
 then
-	/bin/bash "$SCRIPTDIR"/app/_hinstall.sh $ROOT $DEPLOYS $LOGS $KEYS
+	/bin/bash "$SCRIPTDIR"/app/modules/install.sh $ROOT $DEPLOYS $LOGS $KEYS $DEPLOYMENTCONFIG
 	if [ "$?" = 150 ]
 	then
 		usage
@@ -15,6 +15,6 @@ then
 	exit
 else
 	echo "Hermes is already installed. To update run:"
-	echo "hermes update"
+	echo "hermes update as root"
 	usage
 fi

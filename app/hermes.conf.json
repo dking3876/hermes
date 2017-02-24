@@ -2,26 +2,29 @@
     "name": "Demo Application",
     "account": "dking3876",
     "repo": "onyx-framework",
+    "tag": "staging",
     "scripts": [
-        "grunt build",
-        "npm publish"
+        "npm -v",
+        "grunt -v"
+    ],
+    "test": [
+
     ],
     "deploy": [
         {
-            "name": "Live",
+            "tag": "Live",
             "branch": "stable",
-            "beforeinstall": "scripts/before.sh",
+            "beforeinstall": "scripts/before-live.sh",
             "afterinstall": "scripts/after.sh",
-            "source": "",
-            "target": ""
+            "source": "live source",
+            "target": "/var/www/html/onyx"
         },
         {
-            "name": "Dev",
-            "branch": "develop",
-            "source": "",
-            "target": "",
+            "tag": "staging",
+            "branch": "dev",
             "beforeinstall": "scripts/before.sh",
-            "afterinstall": "scripts/after.sh"
+            "source": "",
+            "target": "/var/www/html/onyx-dev"
         }
     ]
 }
