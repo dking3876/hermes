@@ -28,7 +28,7 @@ do
         if [ "$key" = "tag" ]
         then
             eval "c_tag"=$id
-            if [ $c_tag != $SETTAG ]
+            if [ "$c_tag" != "$SETTAG" ]
             then
             flag=0
                 break
@@ -40,8 +40,9 @@ do
         fi
         eval "$var=$id"
     done
-    if [ $flag = configfile ]
+    if [ $flag = 1 ]
     then
+        echo "deploy"
         #DO DEPLOYMENT WITH ALL VARS SOURCE
         #echo "Deployment Configuration"
         #echo "Name: $NAME"
