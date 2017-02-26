@@ -8,10 +8,13 @@ do
 done
 declare -a SCRIPTS
 object=$(cat $configfile | jq -c '.scripts[]')
-for ((i=0;i< ${#object[@]}; i++))
-do
-    SCRIPTS+=( ${object[i]} )
-done
+if [ $object != null ]
+then
+    for ((i=0;i< ${#object[@]}; i++))
+    do
+        SCRIPTS+=( ${object[i]} )
+    done
+fi
 
 SETTAG=$TAG
 DEPLOYMENT=( TAG BRANCH SOURCE TARGET BEFOREINSTALL AFTERINSTALL )
