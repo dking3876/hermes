@@ -7,9 +7,9 @@ source "$ROOT"/app/env.conf
 source "$ROOT"/app/functions.sh
 ACTION=$1
 #shorthand options
-optsetshort=a:r:b:sS:t:hu:g:f:T;
+optsetshort=a:r:b:sS:t:hu:g:f:T:v
 #longhad options
-optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:,filename:,token:,tag:
+optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:,filename:,token:,tag:,version
 if ! options=$(getopt -o $optsetshort -l $optsetlong -- "$@")
 then 
 	exit 1
@@ -29,6 +29,7 @@ do
 	-g|--group) GROUP=$2 ; shift;;
 	-f|--filename) FILENAME=$2 ; shift;;
 	-T|--tag) TAG=$2 ; shift;;
+	-v|--version) echo $H_VERSION; exit;;
 	--service) SERVICE=$2 ; shift;;
 	--bitbucket) SERVICE="BIT";;
 	--auto) AUTO=1; SAVE=1;;
