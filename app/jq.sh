@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-keys=( NAME ACCOUNT REPO BRANCH TAG)
+keys=( NAME ACCOUNT REPO BRANCH)
 for var in "${keys[@]}"
 do
     key=$(echo "$var" | awk '{print tolower($0)}')
@@ -43,20 +43,19 @@ do
     if [ $flag = configfile ]
     then
         #DO DEPLOYMENT WITH ALL VARS SOURCE
-        echo "Deployment Configuration"
-        echo "Name: $NAME"
-        echo "Account: $ACCOUNT"
-        echo "Repo: $REPO"
-        echo "Branch: $BRANCH"
-        echo "Tag: $TAG"
-        echo "Scripts: ${SCRIPTS[@]}"
-        echo "Source: $SOURCE"
-        echo "Target: $TARGET"
-        echo "User: $HERMESUSER"
-        echo "Group: $GROUP"
-        echo "Service: $SERVICE"
-        echo "BeforeInstall: $BEFOREINSTALL"
-        echo "AfterInstall: $AFTERINSTALL"
-        
+        #echo "Deployment Configuration"
+        #echo "Name: $NAME"
+        #echo "Account: $ACCOUNT"
+        #echo "Repo: $REPO"
+        #echo "Branch: $BRANCH"
+        #echo "Tag: $TAG"
+        #echo "Scripts: ${SCRIPTS[@]}"
+        #echo "Source: $SOURCE"
+        #echo "Target: $TARGET"
+        #echo "User: $HERMESUSER"
+        #echo "Group: $GROUP"
+        #echo "Service: $SERVICE"
+        #echo "BeforeInstall: $BEFOREINSTALL"
+        #echo "AfterInstall: $AFTERINSTALL"
     fi
 done
