@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+#LOCATION OF THIS SCRIPT
+ROOT=/var/opt/hermesdeployment
+#source enviorment vars
+source "$ROOT"/app/env.conf
+#source function file
+source "$ROOT"/app/functions.sh
+ACTION=$1
+#shorthand options
+optsetshort=a:r:b:sS:t:hu:g:f:T;
+#longhad options
+optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:,filename:,token:,tag:
+if ! options=$(getopt -o $optsetshort -l $optsetlong -- "$@")
+then 
+	exit 1
+fi
+eval set -- $options
+while [ $# -gt 0 ]
+do
+	case $1 in
+	-h|--help) cat "$ROOT"/hermes.man ; exit;;
+	-a|--account) ACCOUNT="$2" ; shift;;
+	-r|--repo) REPO=$2 ; shift;;
+	-b|--branch) BRANCH=$2 ; shift;;
+	-s|--ssh) TYPE=ssh;;
+	-S|--src) SOURCE=$2 ; shift;;
+	-t|--target) TARGET=$2 ; shift;;
+	-u|--user) HERMESUSER=$2 ; shift;;
+	-g|--group) GROUP=$2 ; shift;;
+	-f|--filename) FILENAME=$2 ; shift;;
+	-T|--tag) TAG=$2 ; shift;;
+	--service) SERVICE=$2 ; shift;;
+	--bitbucket) SERVICE="BIT";;
+	--auto) AUTO=1; SAVE=1;;
+	--save) SAVE=1;;
+	--report) REPORT="$2" ; shift;;
+	--afterinstall) AFTERINSTALL=$2 ; shift;;
+	--beforeinstall) BEFOREINSTALL=$2 ;shift;;
+	--config) CONFIG=$2 ; shift;;
+	--token) TOKEN=$2 ; shift;;
+	esac
+	shift
+done
+case $ACTION in
+	update) source $ROOT/app/modules/update.sh;;
+	keygen) 
+		if [ "$REPO" != "" ] && [ "$ACCOUNT" != "" ]
+		then
+			source "$ROOT"/app/keygen.sh 
+			exit;
+		fi;;
+	sshconfig)
+		/bin/bash "$ROOT"/app/modules/ssh-startup.sh $KEYS $ROOT/app/modules/ssh-agent.conf;
+		exit;;
+	deploy)
+		#Check if --config flag was passed as account-repo-tag
+		if [[ $CONFIG != 0 ]]
+		then
+			#Load existing config file if it exists
+			echo "config file was passed"
+			#run deployment script using config file
+			if [ -f $DEPLOYMENTCONFIG/$CONFIG.deployment.json ]
+			then
+				configfile=$DEPLOYMENTCONFIG/$CONFIG.deployment.json
+				cat $configfile
+				source $ROOT/app/jq.sh
+			else
+				echo "No configuration file exists @ $DEPLOYMENTCONFIG/$CONFIG.deployment.json"
+				exit;
+			fi
+		fi;;
+	auth)
+		echo "saving token for $SERVICE"
+		echo "$TOKEN" > $KEYS/"$SERVICE"-token.txt
+		exit;;
+esac
+#Check if the required parameters are set.
+if [ "$ACCOUNT" != "" ] && [ "$REPO" != "" ] && [ "$TARGET" != "" ]
+then
+	#run a deployment
+	source "$ROOT"/app/modules/deployment.sh
+	#If we are either just saving or automating the configuration
+	if [ $SAVE = 1 ]
+	then
+		echo "Saving config"
+		source "$ROOT"/app/setup.sh
+		if [ "$AUTO" = 1 ]
+		then
+			echo "add cronjob?"
+		fi
+	fi
+else
+	usage
+	if [ "$ACCOUNT" = "" ]
+	then
+		echo "Error: missing arg <-a|--account>"
+	fi
+	if [ "$REPO" = "" ]
+	then
+		echo "Error: missing arg <-r|--repo>"
+	fi
+	if [ "$TARGET" = "" ]
+	then
+		echo "Error: missing arg <-t|--target>"
+	fi
+fi

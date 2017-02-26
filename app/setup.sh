@@ -1,17 +1,30 @@
 #!/usr/bin/env bash
-if [ ! -d "$DEPLOYS/$ACCOUNT" ]
+filename=$DEPLOYMENTCONFIG/$ACCOUNT-$REPO;
+if [ "$TAG" != "" ]
 then
-    mkdir "$DEPLOYS/$ACCOUNT"
+    filename+=-$TAG
 fi
-echo "Setup Config file"
-echo "export ACCOUNT=$ACCOUNT" > "$DEPLOYS/$ACCOUNT"/deployment.conf
-echo "export REPO=$REPO" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export BRANCH=$BRANCH" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export TYPE=$TYPE" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export SOURCE=$SOURCE" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export TARGET=$TARGET" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export HERMESUSER=$HERMESUSER" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export GROUP=$GROUP" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export SERVICE=$SERVICE" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export BEFOREINSTALL=$BEFOREINSTALL" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
-echo "export AFTERINSTALL=$AFTERINSTALL" >> "$DEPLOYS/$ACCOUNT"/deployment.conf 
+cat <<EOL > $filename.deployment.json
+{
+    "name": "$NAME",
+    "account": "$ACCOUNT",
+    "repo": "$REPO",
+    "tag": "$TAG",
+    "deploy": [
+        {
+            "tag": "$TAG",
+            "branch": "$CLONE",
+            "beforeinstall": "$BEFOREINSTALL",
+            "afterinstall": "$AFTERINSTALL",
+            "source": "$SOURCE",
+            "target": "$TARGET"
+        }
+    ]
+}
+EOL
+if [ $? = 0 ]
+then
+    echo "Succesfully saved deployment for $filename"
+else
+    echo "There was an error saving your deployment"
+fi

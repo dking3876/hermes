@@ -1,4 +1,0 @@
-export THEME=brafton2016
-export REPO=brafton-www-website
-export BRANCH=develop
-export DESTLOCATION=/var/opt/deploy/finaltest/

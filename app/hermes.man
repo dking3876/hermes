@@ -1,14 +1,19 @@
 Continuous Integration Script
 
-	Account: <-a|--account>
-
-	Repo: <-r|--repo>
-
-	Branch: <-b|--branch>
-
-	SrcFolder:<--src>
-
-	Destination: <-d|--dest>
-
-	Use SSH: <-s>
-
+	-h|--help) manual
+	-a|--account)  account name
+	-r|--repo)  repo name
+	-b|--branch) branch name
+	-s|--ssh) use ssh rather than https clone (change to always use ssh)
+	-S|--src) source of deployment
+	-t|--target) target for deployment
+	-u|--user) run as user [chown after the fact]
+	-g|--group) change group after  
+	--service) specify another service other than git
+	--bitbucket) sets for bitbucket instead of git
+	--auto)  add cronjob */2 hermes --config {configfile} 
+	--save) save config file
+	--report) show report for specific deployment
+	--afterinstall) script to run after install {script lives in repo}
+	--beforeinstall) script to run after install {script lives in repo}
+	--config) run deployment using config file specified}

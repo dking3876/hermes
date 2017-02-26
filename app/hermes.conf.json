@@ -1,0 +1,30 @@
+{
+    "name": "Demo Application",
+    "account": "dking3876",
+    "repo": "onyx-framework",
+    "tag": "staging",
+    "scripts": [
+        "npm -v",
+        "grunt -v"
+    ],
+    "test": [
+
+    ],
+    "deploy": [
+        {
+            "tag": "Live",
+            "branch": "stable",
+            "beforeinstall": "scripts/before-live.sh",
+            "afterinstall": "scripts/after.sh",
+            "source": "live source",
+            "target": "/var/www/html/onyx"
+        },
+        {
+            "tag": "staging",
+            "branch": "dev",
+            "beforeinstall": "scripts/before.sh",
+            "source": "",
+            "target": "/var/www/html/onyx-dev"
+        }
+    ]
+}
