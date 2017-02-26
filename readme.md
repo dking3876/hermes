@@ -99,13 +99,13 @@ The Branch from the repo that you want to use for this deployment
 * -T | --tag  
 Tags are required to match a deployment configuration to a specic deployment from a hermes.json file in a given repo.
 * -S | --src  
-The source folder from the repo to deploy
+The source folder from the repo to deploy  
 >> Note: If you have more than one source for deployment you should add your additional deployments to your afterinstalltion script
-* -t | --target  
-The target folder for your deployment from your source. 
+* -t | --target   
+The target folder for your deployment from your source.  
 >> Note: If you have more than one target for source you should add your additional deployments to your afterinstalltion script
 * --service  
-Change the service your using for deployment. 
+Change the service your using for deployment.  
 >> Note: Currently Hermes only supports Git and Bitbucket.
 * --bitbucket  
 Pass this flag to change to Bitbucket
@@ -116,10 +116,10 @@ Pass this flag to save the current configuration as a deployment file
 * --report  
 Display report for a given deployment `sudo hermes-ci --report [account]-[repo]`
 * --afterinstall  
-Script to run after the deployment runs.  
+Script to run after the deployment runs.    
 >> Note: The script must exist in the repository from your deployment
 * --beforeinstall  
-Script to run before the deployment runs.
+Script to run before the deployment runs.  
 >> Note: The script must exist in the repository from your deployment
 * --config  
 The deployment configuration to use for a deployment `sudo hermes-ci deploy --config [account]-[repo]`
