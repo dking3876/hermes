@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #LOCATION OF THIS SCRIPT
-ROOT=/var/opt/hermesdeployment
+ROOT=/var/opt/hermes-ci
 #source enviorment vars
 source "$ROOT"/app/env.conf
 #source function file
