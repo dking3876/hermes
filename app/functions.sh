@@ -7,5 +7,5 @@ executecmd(){
     eval $mycmd
 }
 runscript(){
-    
+   echo "scripts" 
 }

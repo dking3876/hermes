@@ -13,7 +13,7 @@ cat <<EOL > $filename.deployment.json
     "deploy": [
         {
             "tag": "$TAG",
-            "branch": "$BRANCH",
+            "branch": "$CLONE",
             "beforeinstall": "$BEFOREINSTALL",
             "afterinstall": "$AFTERINSTALL",
             "source": "$SOURCE",
@@ -22,3 +22,9 @@ cat <<EOL > $filename.deployment.json
     ]
 }
 EOL
+if [ $? = 0 ]
+then
+    echo "Succesfully saved deployment for $filename"
+else
+    echo "There was an error saving your deployment"
+fi

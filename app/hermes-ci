@@ -7,9 +7,9 @@ source "$ROOT"/app/env.conf
 source "$ROOT"/app/functions.sh
 ACTION=$1
 #shorthand options
-optsetshort=a:r:b:sS:t:hu:g:f:
+optsetshort=a:r:b:sS:t:hu:g:f:T;
 #longhad options
-optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:,filename:
+optsetlong=account:,repo:,branch:,ssh,src:,target:,help,report,user:,group:,auto,save,bitbucket,service:,afterinstall:,beforeinstall:,config:,filename:,token:,tag:
 if ! options=$(getopt -o $optsetshort -l $optsetlong -- "$@")
 then 
 	exit 1
@@ -28,6 +28,7 @@ do
 	-u|--user) HERMESUSER=$2 ; shift;;
 	-g|--group) GROUP=$2 ; shift;;
 	-f|--filename) FILENAME=$2 ; shift;;
+	-T|--tag) TAG=$2 ; shift;;
 	--service) SERVICE=$2 ; shift;;
 	--bitbucket) SERVICE="BIT";;
 	--auto) AUTO=1; SAVE=1;;
@@ -36,6 +37,7 @@ do
 	--afterinstall) AFTERINSTALL=$2 ; shift;;
 	--beforeinstall) BEFOREINSTALL=$2 ;shift;;
 	--config) CONFIG=$2 ; shift;;
+	--token) TOKEN=$2 ; shift;;
 	esac
 	shift
 done
@@ -52,7 +54,7 @@ case $ACTION in
 		exit;;
 	deploy)
 		#Check if --config flag was passed as account-repo-tag
-		if [[ $* == *--config* ]]
+		if [[ $CONFIG != 0 ]]
 		then
 			#Load existing config file if it exists
 			echo "config file was passed"
@@ -60,35 +62,32 @@ case $ACTION in
 			if [ -f $DEPLOYMENTCONFIG/$CONFIG.deployment.json ]
 			then
 				configfile=$DEPLOYMENTCONFIG/$CONFIG.deployment.json
+				cat $configfile
 				source $ROOT/app/jq.sh
 			else
 				echo "No configuration file exists @ $DEPLOYMENTCONFIG/$CONFIG.deployment.json"
 				exit;
 			fi
 		fi;;
+	auth)
+		echo "saving token for $SERVICE"
+		echo "$TOKEN" > $KEYS/"$SERVICE"-token.txt
+		exit;;
 esac
 #Check if the required parameters are set.
 if [ "$ACCOUNT" != "" ] && [ "$REPO" != "" ] && [ "$TARGET" != "" ]
 then
-	#The below is purly for debugging right now
-	echo "Current Configuration"
-	echo "Account: $ACCOUNT"
-	echo "Repo: $REPO"
-	echo "Branch: $BRANCH"
-	echo "Type: $TYPE"
-	echo "Source: $SOURCE"
-	echo "Target: $TARGET"
-	echo "User: $HERMESUSER"
-	echo "Group: $GROUP"
-	echo "Service: $SERVICE"
-	echo "BeforeInstall: $BEFOREINSTALL"
-	echo "AfterInstall: $AFTERINSTALL"
 	#run a deployment
-	source "$SCRIPTDIR"/deployment.sh
+	source "$ROOT"/app/modules/deployment.sh
 	#If we are either just saving or automating the configuration
-	if [ "$SAVE" = 1 ]
+	if [ $SAVE = 1 ]
 	then
+		echo "Saving config"
 		source "$ROOT"/app/setup.sh
+		if [ "$AUTO" = 1 ]
+		then
+			echo "add cronjob?"
+		fi
 	fi
 else
 	usage
