@@ -37,6 +37,9 @@ while true; do
             #store ssh-agent header for use for pulls and clones
             (crontab -l 2>/dev/null; echo "@reboot hermes-ci sshconfig") | crontab -
             #(crontab -l 2>/dev/null; echo "*/2 * * * * hermes sshconfig") | crontab -
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+            echo -e "Host bitbucket.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+            touch /etc/cron.d/hermes-ci
             exit;;
         [Nn]* ) exit 150;;
         * ) echo "Please answer yes or no.";;
