@@ -1,4 +1,5 @@
 before_deploy: "echo 'ready?'"
+install: true
 deploy:
   skip_cleanup: true
   provider: releases
