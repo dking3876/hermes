@@ -10,18 +10,18 @@ Currently Hermes is CLI only however I will be adding a GUI interface in the fut
 ### Installation Debian/Ubuntu
 ```
 	sudo apt-get install jq git
-	wget https://github.com/hermes-ci/hermes/archive/v1.0.3-beta.tar.gz
-	tar -xzvf v1.0.3-beta.tar.gz
-    sudo chmod +x hermes-1.0.3-beta/hermes.sh
-	sudo hermes-1.0.3-beta/hermes.sh install
+	wget https://github.com/hermes-ci/hermes/archive/v1.0.4-beta.tar.gz
+	tar -xzvf v1.0.4-beta.tar.gz
+    sudo chmod +x hermes-1.0.4-beta/hermes.sh
+	sudo hermes-1.0.4-beta/hermes.sh install
 ```
 ### Installation RHEL/Fedora
 ```
 	sudo yum install jq git
-	wget https://github.com/hermes-ci/hermes/archive/v1.0.3-beta.tar.gz
-	tar -xzvf v1.0.3-beta.tar.gz
-    sudo chmod +x hermes-1.0.3-beta/hermes.sh
-	sudo hermes-1.0.3-beta/hermes.sh install
+	wget https://github.com/hermes-ci/hermes/archive/v1.0.4-beta.tar.gz
+	tar -xzvf v1.0.4-beta.tar.gz
+    sudo chmod +x hermes-1.0.4-beta/hermes.sh
+	sudo hermes-1.0.4-beta/hermes.sh install
 ```
 ### Hermes Configuration
 Hermes  setup is fairly simple.  Heremes uses SSH to connect with your repos on Github and Bitbucket.  You do not need to directly integrate with your account, however for the "Pure Integrated Workflow" it will be required.
