@@ -17,3 +17,4 @@ Continuous Integration Script
 	--afterinstall) script to run after install {script lives in repo}
 	--beforeinstall) script to run after install {script lives in repo}
 	--config) run deployment using config file specified}
+	

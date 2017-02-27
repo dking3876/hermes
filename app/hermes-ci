@@ -18,7 +18,7 @@ eval set -- $options
 while [ $# -gt 0 ]
 do
 	case $1 in
-	-h|--help) cat "$ROOT"/app/hermes.man ; exit;;
+	-h|--help) cat "$ROOT"/app/hermes.man; echo "" ; exit;;
 	-a|--account) ACCOUNT="$2" ; shift;;
 	-r|--repo) REPO=$2 ; shift;;
 	-b|--branch) BRANCH=$2 ; shift;;
@@ -63,7 +63,6 @@ case $ACTION in
 			if [ -f $DEPLOYMENTCONFIG/$CONFIG.deployment.json ]
 			then
 				configfile=$DEPLOYMENTCONFIG/$CONFIG.deployment.json
-				cat $configfile
 				source $ROOT/app/jq.sh
 			else
 				echo "No configuration file exists @ $DEPLOYMENTCONFIG/$CONFIG.deployment.json"
@@ -87,7 +86,11 @@ then
 		source "$ROOT"/app/setup.sh
 		if [ "$AUTO" = 1 ]
 		then
-			echo "add cronjob?"
+			if [ "$TAG" != "" ]
+			then
+				echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG" >> $CRONFILE
+			else
+				echo "Setting Hermes for automatic deployment requires a 'Tag' [-T|--tag]"
 		fi
 	fi
 else

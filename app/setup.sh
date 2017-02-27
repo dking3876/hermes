@@ -4,6 +4,10 @@ if [ "$TAG" != "" ]
 then
     filename+=-$TAG
 fi
+if [ "$NAME" = "" ]
+then
+    NAME=$ACCOUNT
+fi
 cat <<EOL > $filename.deployment.json
 {
     "name": "$NAME",

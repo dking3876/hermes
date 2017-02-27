@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "starting run $(date)" 2>&1 | tee "$LOGS/$ACCOUNT"_"$REPO" 
+echo "starting run $(date)" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 newdeploy=0
 source $SSHCONFIG
 if [ "$BRANCH" != "" ]
@@ -9,14 +9,14 @@ then
 fi
 if [ -d "$DEPLOYS/$ACCOUNT/$REPO$BRANCH" ]
 then
-	echo "fetching branch $BRANCH from $REPO" 2>&1 | tee "$LOGS/$ACCOUNT"_"$REPO" 
+	echo "fetching branch $BRANCH from $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     res=$( cd $DEPLOYS/$ACCOUNT/$REPO$BRANCH && git pull )
 else
     if [ ! -d "$DEPLOYS/$ACCOUNT" ]
     then
         mkdir "$DEPLOYS/$ACCOUNT"
     fi
-	echo "cloning repo $REPO" 2>&1 | tee "$LOGS/$ACCOUNT"_"$REPO" 
+	echo "cloning repo $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$BRANCH" != "" ]
     then
         withbranch="-b $CLONE"
@@ -37,11 +37,11 @@ else
         #exit 153
     fi
     newdeploy=1
-    (git clone $withbranch "$url" $DEPLOYS/$ACCOUNT/$REPO$BRANCH) 2>&1 | tee "$LOGS/$ACCOUNT"_"$REPO" 
+    (git clone $withbranch "$url" $DEPLOYS/$ACCOUNT/$REPO$BRANCH) 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 fi
 if [ "$res" = "Already up-to-date." -o $newdeploy = 0 ]
 then
-	echo "No recent changes to $REPO" 2>&1 | tee "$LOGS/$ACCOUNT"_"$REPO" 
+	echo "No recent changes to $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 else
     if [ -f $DEPLOYS/$ACCOUNT/$REPO$BRANCH/hermes.json ]
     then
@@ -59,12 +59,12 @@ else
         echo "do 'beforeintall'"
         eval $BEFOREINSTALL
     fi
-	echo "Intializing deployment of $REPO" 2>&1 | tee "$LOGS/$ACCOUNT"_"$REPO" 
+	echo "Intializing deployment of $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ ! -d $TARGET ]
     then 
         mkdir $TARGET
     fi
-	cp -R "$DEPLOYS/$ACCOUNT/$REPO$BRANCH"/* "$TARGET" 2>&1 | tee "$LOGS/$ACCOUNT"_"$REPO" 
+	cp -R "$DEPLOYS/$ACCOUNT/$REPO$BRANCH"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$AFTERINSTALL" != "" ]
     then
         echo "do 'afterinstall'"

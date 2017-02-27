@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-sudo -u hermes-ci ssh-keygen -f "$KEYS"/"$REPO" -t rsa 
+sudo -u hermes-ci ssh-keygen -f "$KEYS"/"$REPO" -t rsa -P ""
 if [ "$?" = 0 ]
 then
 	mv "$KEYS"/"$REPO" "$KEYS"/"$REPO".pem

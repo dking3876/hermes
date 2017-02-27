@@ -7,11 +7,14 @@ do
     eval "$var"=$id
 done
 declare -a SCRIPTS
-object=$(cat $configfile | jq -c '.scripts[]')
-for ((i=0;i< ${#object[@]}; i++))
-do
-    SCRIPTS+=( ${object[i]} )
-done
+object=$(cat $configfile | jq -c '.scripts[]?')
+if [ $object != null ]
+then
+    for ((i=0;i< ${#object[@]}; i++))
+    do
+        SCRIPTS+=( ${object[i]} )
+    done
+fi
 
 SETTAG=$TAG
 DEPLOYMENT=( TAG BRANCH SOURCE TARGET BEFOREINSTALL AFTERINSTALL )
@@ -28,7 +31,7 @@ do
         if [ "$key" = "tag" ]
         then
             eval "c_tag"=$id
-            if [ $c_tag != $SETTAG ]
+            if [ "$c_tag" != "$SETTAG" ]
             then
             flag=0
                 break
@@ -40,8 +43,9 @@ do
         fi
         eval "$var=$id"
     done
-    if [ $flag = configfile ]
+    if [ $flag = 1 ]
     then
+        echo "deploy"
         #DO DEPLOYMENT WITH ALL VARS SOURCE
         #echo "Deployment Configuration"
         #echo "Name: $NAME"
