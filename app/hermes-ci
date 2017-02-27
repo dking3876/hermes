@@ -75,7 +75,7 @@ case $ACTION in
 		exit;;
 esac
 #Check if the required parameters are set.
-if [ "$ACCOUNT" != "" ] && [ "$REPO" != "" ] && [ "$TARGET" != "" ]
+if [ "$ACCOUNT" != "" ] && [ "$REPO" != "" ]
 then
 	#run a deployment
 	source "$ROOT"/app/modules/deployment.sh
