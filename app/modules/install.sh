@@ -39,6 +39,10 @@ while true; do
             #(crontab -l 2>/dev/null; echo "*/2 * * * * hermes sshconfig") | crontab -
             if [ ! -f /root/.ssh/config ]
             then
+                if [ ! -d /root/.ssh ]
+                then
+                    mkdir /root/.ssh
+                fi
                 touch /root/.ssh/config
             fi
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
