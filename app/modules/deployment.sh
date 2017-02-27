@@ -11,6 +11,7 @@ if [ -d "$DEPLOYS/$ACCOUNT/$REPO$BRANCH" ]
 then
 	echo "fetching branch $BRANCH from $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     res=$( cd $DEPLOYS/$ACCOUNT/$REPO$BRANCH && git pull )
+    echo "$res" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO"
 else
     if [ ! -d "$DEPLOYS/$ACCOUNT" ]
     then
@@ -39,10 +40,8 @@ else
     newdeploy=1
     (git clone $withbranch "$url" $DEPLOYS/$ACCOUNT/$REPO$BRANCH) 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 fi
-if [ "$res" = "Already up-to-date." -o $newdeploy = 0 ]
+if [ "$res" != "Already up-to-date." -o $newdeploy = 1 ]
 then
-	echo "No recent changes to $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
-else
     if [ -f $DEPLOYS/$ACCOUNT/$REPO$BRANCH/hermes.json ]
     then
         echo "using config file from repo"
@@ -74,4 +73,6 @@ else
 	chmod -R 775 "$TARGET"
 	#find "$TARGET" -type d -exec chmod 775 {} +
 	chown -R deryk:deryk "$TARGET"
+else
+    	echo "No recent changes to $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 fi
