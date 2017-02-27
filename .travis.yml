@@ -1,5 +1,5 @@
 before_deploy: "echo 'ready?'"
-install: true
+install: false
 sudo: false
 deploy:
   skip_cleanup: true
