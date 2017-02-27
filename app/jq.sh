@@ -7,7 +7,7 @@ do
     eval "$var"=$id
 done
 declare -a SCRIPTS
-object=$(cat $configfile | jq -c '.scripts[]')
+object=$(cat $configfile | jq -c '.scripts[]?')
 if [ $object != null ]
 then
     for ((i=0;i< ${#object[@]}; i++))
