@@ -9,7 +9,7 @@ then
 fi
 if [ -d "$DEPLOYS/$ACCOUNT/$REPO$BRANCH" ]
 then
-	echo "fetching branch $BRANCH from $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+	echo "Checking $CLONE from $REPO for changes" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     res=$( cd $DEPLOYS/$ACCOUNT/$REPO$BRANCH && git pull )
     echo "$res" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO"
 else
