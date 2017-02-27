@@ -34,7 +34,7 @@ else
         echo "bitbucket selected"
         url="git@bitbucket.org:$ACCOUNT/$REPO.git"
     else
-        echo "Unrecognized Service Provided: $SERVICE"
+        #echo "Unrecognized Service Provided: $SERVICE"
         #exit 153
     fi
     newdeploy=1
@@ -63,16 +63,17 @@ then
     then 
         mkdir $TARGET
     fi
-	cp -R "$DEPLOYS/$ACCOUNT/$REPO"_"$BRANCH"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+    if [ "$SOURCE" != "" ]
+    then    
+        SOURCE="/$SOURCE"
+    fi
+	cp -R "$DEPLOYS/$ACCOUNT/$REPO$BRANCH$SOURCE"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$AFTERINSTALL" != "" ]
     then
         echo "do 'afterinstall'"
         eval $AFTERINSTALL
     fi
     #this should be in an after install script
-	chmod -R 775 "$TARGET"
-	#find "$TARGET" -type d -exec chmod 775 {} +
-	chown -R deryk:deryk "$TARGET"
 else
     	echo "No recent changes to $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 fi
