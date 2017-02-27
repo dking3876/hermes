@@ -9,4 +9,4 @@ deploy:
   file: ''
   on:
     repo: hermes-ci/hermes
-    branch: dev
+    branch: master
