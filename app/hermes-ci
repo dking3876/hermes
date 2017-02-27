@@ -90,7 +90,7 @@ then
 			then
 				echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG" >> $CRONFILE
 			else
-				echo "Setting Hermes for automatic deployment requires a 'Tag'"
+				echo "Setting Hermes for automatic deployment requires a 'Tag' [-T|--tag]"
 		fi
 	fi
 else
