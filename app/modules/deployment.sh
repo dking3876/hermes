@@ -63,7 +63,7 @@ then
     then 
         mkdir $TARGET
     fi
-	cp -R "$DEPLOYS/$ACCOUNT/$REPO$BRANCH"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+	cp -R "$DEPLOYS/$ACCOUNT/$REPO"_"$BRANCH"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$AFTERINSTALL" != "" ]
     then
         echo "do 'afterinstall'"
