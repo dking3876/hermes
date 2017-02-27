@@ -86,7 +86,11 @@ then
 		source "$ROOT"/app/setup.sh
 		if [ "$AUTO" = 1 ]
 		then
-			echo "add cronjob?"
+			if [ "$TAG" != "" ]
+			then
+				echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG" >> $CRONFILE
+			else
+				echo "Setting Hermes for automatic deployment requires a 'Tag'"
 		fi
 	fi
 else
