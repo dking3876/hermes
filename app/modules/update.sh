@@ -4,9 +4,10 @@ echo "##        Hermes Automated Deployment"
 echo "#########################################################"
 echo "Updating Hermes."
 #download hermes with wget to tmp directory
-wget -O /tmp/hermesupdate/latest.tar.gz http://localhost/hermes/latest.tar.gz 
+echo "hermes auto update is not currently available.  Please see docs at https://github.com/hermes-ci"
+exit;
+wget -O /tmp/hermesupdate/latest.tar.gz https://github.com/hermes-ci/hermes/archive/v1.0.6-beta.tar.gz
 tar -xvzf /tmp/hermesupdate/latest.tar.gz
-cp -R /home/deryk/hermes /tmp/hermesupdate
 per=0
 while true; do
     read -p "Would you like to update Hermes now? [y/n] " answer
