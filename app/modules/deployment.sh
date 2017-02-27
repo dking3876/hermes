@@ -9,7 +9,7 @@ then
 fi
 if [ -d "$DEPLOYS/$ACCOUNT/$REPO$BRANCH" ]
 then
-	echo "fetching branch $BRANCH from $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+	echo "Checking $CLONE from $REPO for changes" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     res=$( cd $DEPLOYS/$ACCOUNT/$REPO$BRANCH && git pull )
     echo "$res" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO"
 else
@@ -63,7 +63,7 @@ then
     then 
         mkdir $TARGET
     fi
-	cp -R "$DEPLOYS/$ACCOUNT/$REPO$BRANCH"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+	cp -R "$DEPLOYS/$ACCOUNT/$REPO"_"$BRANCH"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$AFTERINSTALL" != "" ]
     then
         echo "do 'afterinstall'"
