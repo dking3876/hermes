@@ -1,4 +1,9 @@
-before_deploy: "git tag -a v1.1.0 -m 'my version 1.1.0'"
+before_deploy:
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
+  - export GIT_TAG=$TRAVIS_BRANCH-0.1.$TRAVIS_BUILD_NUMBER
+  - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+  - git push -q https://$TAGPERM@github.com/RlonRyan/JBasicX --tags
 install: false
 language: bash
 sudo: false
@@ -9,6 +14,6 @@ deploy:
   api_key:
     secure: gBAlvOUk/2jhvYG6Tr0df7zBPpZMJJXZYU9mETVsSgKISp9+3YGn7xq7X52+XqYU/9hcoqlu7oS/FGov/qcTI5wVFE/afwIlyTqjY4rB09J2bv+MEow3RZGO/dTanaOAFkISDiCCLkb9hcGwC65jvHYZhzwoxYMkyRay9U2SoURAOG0z5MUqmSDwtge0FkLH8NhhVAFyP1ZJBhufb0KR1qP0DPlnDzG+2o6YL0YAfv6LxLfBSUvO/UrQliTj73EVDpwYzzw06Y66hmmp7vhmDP4/CyH0cErObzm5fO+MWbAzdVRncPBhn+eRkrkkWTLcnmI+NWS7AGQ+Lr8obnJUP0BXc24ZDS6S7jm3ZsxpxxsUDiA/kt9IV937EtWJ3LmqeOfxS243+tPvPWCDr6q6w9de03VfY6a7XUL+f/qMHmNuvSKTrkySZrk2HxYj0rgpRc+fIEz9amStOsm1hrYGqM+pz+BBreOAr8Oy/OHw2eyS/2aMw5p2l2LLIY8dVZfeqoAWxghp6hLlSY/ZFD5zQynem7jxghMmsk/Mh97+lH9trqh+Z2VaNn6FOpPdtWSZ/0x5trFrUEreDohJxJmWJoDv+hhQgBnIB8XQijnOyGCGzK35ZXAEk6dGFYJ+hM+jMlWr6hCRaRrGt3O3lg/bNo2TQ7F6WJfPNzRTBtXcnYI=
   on:
-    tags: true
+    tags: false
     repo: hermes-ci/hermes
     branch: master
