@@ -1,4 +1,4 @@
-before_deploy: "git tag -a v1.1.0 -m 'my version 1.1.0''
+before_deploy: "git tag -a v1.1.0 -m 'my version 1.1.0'"
 install: false
 language: bash
 sudo: false
