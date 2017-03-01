@@ -56,7 +56,7 @@ then
     if [ "$BEFOREINSTALL" != "" ]
     then
         echo "do 'beforeintall'"
-        eval $BEFOREINSTALL
+        eval (source $BEFOREINSTALL)
     fi
 	echo "Intializing deployment of $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ ! -d $TARGET ]
@@ -71,7 +71,7 @@ then
     if [ "$AFTERINSTALL" != "" ]
     then
         echo "do 'afterinstall'"
-        eval $AFTERINSTALL
+        eval (source $AFTERINSTALL)
     fi
     #this should be in an after install script
 else
