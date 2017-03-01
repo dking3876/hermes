@@ -8,7 +8,6 @@ echo "It does not appear Hermes has been installed."
 per=0
 dest=$1
 orig=$(dirname $0)
-echo $orig
 while true; do
     read -p "Would you like to install Hermes now? [y/n] " answer
     case $answer in
