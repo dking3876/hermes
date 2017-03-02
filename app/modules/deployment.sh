@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+source $ROOT/app/modules/reportcleanup.sh
 echo "starting run $(date)" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 newdeploy=0
 source $SSHCONFIG
