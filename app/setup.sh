@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 filename=$DEPLOYMENTCONFIG/$ACCOUNT-$REPO;
-if [ "$TAG" != "" ]
-then
-    filename+=-$TAG
-fi
 if [ "$NAME" = "" ]
 then
     NAME=$ACCOUNT
@@ -13,11 +9,10 @@ cat <<EOL > $filename.deployment.json
     "name": "$NAME",
     "account": "$ACCOUNT",
     "repo": "$REPO",
-    "tag": "$TAG",
     "deploy": [
         {
             "tag": "$TAG",
-            "branch": "$CLONE",
+            "branch": "$BRANCH",
             "beforeinstall": "$BEFOREINSTALL",
             "afterinstall": "$AFTERINSTALL",
             "source": "$SOURCE",
@@ -28,7 +23,7 @@ cat <<EOL > $filename.deployment.json
 EOL
 if [ $? = 0 ]
 then
-    echo "Succesfully saved deployment for $filename"
+    echo "Succesfully saved deployment for $filename . Run hermes-ci deploy --config $filename --tag $tag to run this deployment"
 else
     echo "There was an error saving your deployment"
 fi
