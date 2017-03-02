@@ -60,12 +60,17 @@ case $ACTION in
 			#Load existing config file if it exists
 			echo "config file was passed"
 			#run deployment script using config file
-			if [ -f $DEPLOYMENTCONFIG/$CONFIG.deployment.json ]
+			if [ -f $DEPLOYMENTCONFIG/$CONFIG.deployment.json ] && [ "$TAG" != "" ]
 			then
 				configfile=$DEPLOYMENTCONFIG/$CONFIG.deployment.json
 				source $ROOT/app/jq.sh
 			else
-				echo "No configuration file exists @ $DEPLOYMENTCONFIG/$CONFIG.deployment.json"
+				if [ "$TAG" = "" ]
+				then
+					echo "No deployment tag was passed. Unclear what deployment to run"
+				else
+					echo "No configuration file exists @ $DEPLOYMENTCONFIG/$CONFIG.deployment.json"
+				fi
 				exit;
 			fi
 		fi;;
@@ -77,10 +82,8 @@ esac
 #Check if the required parameters are set.
 if [ "$ACCOUNT" != "" ] && [ "$REPO" != "" ]
 then
-	#run a deployment
-	source "$ROOT"/app/modules/deployment.sh
 	#If we are either just saving or automating the configuration
-	if [ $SAVE = 1 ]
+	if [ $SAVE = 1 ] && [ "$TAG" != "" ]
 	then
 		echo "Saving config"
 		source "$ROOT"/app/setup.sh
@@ -88,12 +91,20 @@ then
 		then
 			if [ "$TAG" != "" ]
 			then
-				echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO-$TAG --tag $TAG" >> $CRONFILE
+				echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG" >> $CRONFILE
 			else
 				echo "Setting Hermes for automatic deployment requires a 'Tag' [-T|--tag]"
 			fi
 		fi
+	else
+		if [ $SAVE = 1 ] && [ "$TAG" = "" ]
+		then
+			echo "No deployment tag was passed. Cannot save deployment configuration without default deployment tag" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+		fi
+		echo ""
 	fi
+	#Run the deployment
+	source "$ROOT"/app/modules/deployment.sh
 else
 	usage
 	if [ "$ACCOUNT" = "" ]
@@ -103,9 +114,5 @@ else
 	if [ "$REPO" = "" ]
 	then
 		echo "Error: missing arg <-r|--repo>"
-	fi
-	if [ "$TARGET" = "" ]
-	then
-		echo "Error: missing arg <-t|--target>"
 	fi
 fi

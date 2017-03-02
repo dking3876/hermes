@@ -2,15 +2,15 @@
 echo "starting run $(date)" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 newdeploy=0
 source $SSHCONFIG
+FULLPATH=$DEPLOYS/$ACCOUNT/$REPO
 if [ "$BRANCH" != "" ]
 then
-    CLONE=$BRANCH
-    BRANCH="_$BRANCH"
+    FULLPATH="$DEPLOYS/$ACCOUNT/$REPO"_"$BRANCH"
 fi
-if [ -d "$DEPLOYS/$ACCOUNT/$REPO$BRANCH" ]
+if [ -d "$FULLPATH" ]
 then
-	echo "Checking $CLONE from $REPO for changes" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
-    res=$( cd $DEPLOYS/$ACCOUNT/$REPO$BRANCH && git pull )
+	echo "Checking $BRANCH from $REPO for changes" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+    res=$( cd $FULLPATH && git pull )
     echo "$res" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO"
 else
     if [ ! -d "$DEPLOYS/$ACCOUNT" ]
@@ -35,43 +35,47 @@ else
         url="git@bitbucket.org:$ACCOUNT/$REPO.git"
     else
         #echo "Unrecognized Service Provided: $SERVICE"
+        echo ""
         #exit 153
     fi
     newdeploy=1
-    (git clone $withbranch "$url" $DEPLOYS/$ACCOUNT/$REPO$BRANCH) 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+    (git clone $withbranch "$url" $FULLPATH) 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
 fi
 if [ "$res" != "Already up-to-date." -o $newdeploy = 1 ]
 then
-    if [ -f $DEPLOYS/$ACCOUNT/$REPO$BRANCH/hermes.json ]
+    HERMES_ROOT=$FULLPATH
+    if [ -f $FULLPATH/hermes.json ]
     then
-        echo "using config file from repo"
-        configfile=$DEPLOYS/$ACCOUNT/$REPO$BRANCH/hermes.json
+        echo "hermes.json file provided. Overridding default deployment..." 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+        configfile=$FULLPATH/hermes.json
         source $ROOT/app/jq.sh
     fi
-
     if [ "$SCRIPTS" != "" ]
     then
         echo "Do 'scripts'"
     fi
     if [ "$BEFOREINSTALL" != "" ]
     then
-        echo "do 'beforeintall'"
-        eval (source $BEFOREINSTALL)
+        echo "Procesing $BEFOREINSTALL script..." 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+        eval source $FULLPATH/$BEFOREINSTALL 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO"
     fi
-	echo "Intializing deployment of $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
-    if [ ! -d $TARGET ]
-    then 
-        mkdir $TARGET
+    if [ "$TARGET" != "" ]
+    then
+        echo "Intializing deployment of $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+        if [ ! -d $TARGET ]
+        then 
+            mkdir $TARGET 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+        fi
+        if [ "$SOURCE" != "" ]
+        then    
+            SOURCE="/$SOURCE"
+        fi
+        cp -R "$FULLPATH$SOURCE"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     fi
-    if [ "$SOURCE" != "" ]
-    then    
-        SOURCE="/$SOURCE"
-    fi
-	cp -R "$DEPLOYS/$ACCOUNT/$REPO$BRANCH$SOURCE"/* "$TARGET" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$AFTERINSTALL" != "" ]
     then
-        echo "do 'afterinstall'"
-        eval (source $AFTERINSTALL)
+        echo "Procesing $AFTERINSTALL script..." 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
+        eval source $FULLPATH/$AFTERINSTALL 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     fi
     #this should be in an after install script
 else

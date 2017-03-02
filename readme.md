@@ -268,8 +268,15 @@ Setup a completely automated workflow following the below steps. The following s
 3. Create a deployment for your application and set to auto deploy
 ```
 sudo hermes-ci keygen -a bobsmith -r deployments
-sudo hermes-ci -a bobsmith -r deployments -b master -T live --save --auto
+sudo hermes-ci -a bobsmith -r deployments -b master -T live --auto
 ```
+
+#### Hermes Variables for available for use  
+- ${HERMES_ROOT}  
+The root directory serving your deployment  
+- ${TARGET}
+The destination directory of your deployment
+
 
 ### Hermes GUI interface
 > This is currently a work in progress and not yet fully tested feature

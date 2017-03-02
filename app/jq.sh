@@ -8,7 +8,7 @@ do
 done
 declare -a SCRIPTS
 object=$(cat $configfile | jq -c '.scripts[]?')
-if [ $object != null ]
+if [ "$object" != "" ]
 then
     for ((i=0;i< ${#object[@]}; i++))
     do
@@ -43,23 +43,4 @@ do
         fi
         eval "$var=$id"
     done
-    if [ $flag = 1 ]
-    then
-        echo "deploy"
-        #DO DEPLOYMENT WITH ALL VARS SOURCE
-        #echo "Deployment Configuration"
-        #echo "Name: $NAME"
-        #echo "Account: $ACCOUNT"
-        #echo "Repo: $REPO"
-        #echo "Branch: $BRANCH"
-        #echo "Tag: $TAG"
-        #echo "Scripts: ${SCRIPTS[@]}"
-        #echo "Source: $SOURCE"
-        #echo "Target: $TARGET"
-        #echo "User: $HERMESUSER"
-        #echo "Group: $GROUP"
-        #echo "Service: $SERVICE"
-        #echo "BeforeInstall: $BEFOREINSTALL"
-        #echo "AfterInstall: $AFTERINSTALL"
-    fi
 done
