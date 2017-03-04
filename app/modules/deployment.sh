@@ -53,7 +53,11 @@ then
     fi
     if [ "$SCRIPTS" != "" ]
     then
-        echo "Do 'scripts'"
+        for ((i=0;i< ${#SCRIPTS[@]}; i++))
+        do
+            SCRIPT=${SCRIPTS[i]}
+            cd $FULLPATH && executecmd $SCRIPT
+        done
     fi
     if [ "$BEFOREINSTALL" != "" ]
     then
