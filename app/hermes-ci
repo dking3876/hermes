@@ -91,7 +91,7 @@ then
 		then
 			if [ "$TAG" != "" ]
 			then
-				cronjob=$(cat /etc/cron.d/hermes-ci | grep $ACCOUNT-$REPO --tag $TAG)
+				cronjob=$(cat /etc/cron.d/hermes-ci | grep -e "$ACCOUNT-$REPO --tag $TAG")
 				echo $cronjob
 				if [ "$cronjob" = "" ]
 				then
