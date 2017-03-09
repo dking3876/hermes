@@ -21,7 +21,7 @@ else
 	echo "cloning repo $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$BRANCH" != "" ]
     then
-        withbranch="-b $CLONE"
+        withbranch="-b $BRANCH"
     fi
     echo $SERVICE
     if [ "$SERVICE" = "GIT" ]
@@ -53,7 +53,11 @@ then
     fi
     if [ "$SCRIPTS" != "" ]
     then
-        echo "Do 'scripts'"
+        for ((i=0;i< ${#SCRIPTS[@]}; i++))
+        do
+            SCRIPT=${SCRIPTS[i]}
+            cd $FULLPATH && executecmd $SCRIPT
+        done
     fi
     if [ "$BEFOREINSTALL" != "" ]
     then

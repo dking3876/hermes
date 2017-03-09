@@ -59,6 +59,14 @@ Once you have your OAuth key you can install the key by one of the following met
 ### Actions
 
 #### update
+> Currently while in Beta the auto update is disabled. 
+> To update download the latest release or other release tarball file. 
+> copy the contents of the 'app' folder in the downloaded tarball to the 'app' folder at /var/opt/hermes-ci
+> Run the below commands
+```bash
+            chmod +x /var/opt/hermes-ci/app/*.sh
+            chmod +x /var/opt/hermes-ci/app/hermes-ci
+```
 To Update Hermes run `sudo hermes-ci update`
 
 #### keygen  

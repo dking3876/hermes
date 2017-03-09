@@ -91,7 +91,14 @@ then
 		then
 			if [ "$TAG" != "" ]
 			then
-				echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG" >> $CRONFILE
+				cronjob=$(cat /etc/cron.d/hermes-ci | grep -e "$ACCOUNT-$REPO --tag $TAG")
+				echo $cronjob
+				if [ "$cronjob" = "" ]
+				then
+					echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG" >> $CRONFILE
+				else
+					echo "Auto deploy is already set up for $ACCOUNT-$REPO with $TAG tag" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO"
+				fi
 			else
 				echo "Setting Hermes for automatic deployment requires a 'Tag' [-T|--tag]"
 			fi
