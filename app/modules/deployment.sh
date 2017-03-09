@@ -21,7 +21,7 @@ else
 	echo "cloning repo $REPO" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO" 
     if [ "$BRANCH" != "" ]
     then
-        withbranch="-b $CLONE"
+        withbranch="-b $BRANCH"
     fi
     echo $SERVICE
     if [ "$SERVICE" = "GIT" ]

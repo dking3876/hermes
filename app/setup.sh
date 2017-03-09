@@ -7,7 +7,7 @@ then
 
     #tag does not exist in deploy array setup new deployment
     exists=$(cat $filename.deployment.json | jq '.deploy[] | select(.tag=="'$TAG'")')
-    if [ "$exists" != "" ]
+    if [ "$exists" = "" ]
     then
         #add new deployment to array and save new deployment file
     content=$(cat $filename.deployment.json | jq '.deploy |= .+ [{
