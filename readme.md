@@ -163,6 +163,10 @@ When saving a deployment the `-t|--tag` is required.  Hermes will match the tag 
         "npm -v",
         "grunt -v"
     ],
+    "global": {
+        "targetroot": "/var/www/html/${NAME}",
+        "siteurl": "http://hermes-ci.com"
+    },
     "deploy": [
         {
             "tag": "live",
@@ -285,7 +289,22 @@ The root directory serving your deployment
 - ${TARGET}
 The destination directory of your deployment
 
+#### User defined variables using the ${GLOBAL} keyword
+You can define your own variables using the "global" parameter in your hermes.json file
+```json
+"global": {
+    "variable_a": "value 1",
+    "variable_b": "value 2"
+}
+```
+Once you define your variables you can use these in your scripts with the following syntax
+```bash
+${GLOBAL_VARIABLE_A}
+```
+> Your variable is converted to uppercase and appended to the 'GLOBAL' keyword followed by and underscore '_'
 
+#### User defined variables using the ${LOCAL} keyword
+> Coming soon...
 ### Hermes GUI interface
 > This is currently a work in progress and not yet fully tested feature
 
