@@ -15,7 +15,17 @@ then
         SCRIPTS+=( ${object[i]} )
     done
 fi
-
+tmpglobal=$(cat $configfile | jq '.global | keys[]')
+IFS=' ' read -r -a globals <<< $tmpglobal
+for curkey in ${globals[@]}
+do
+    el=$curkey
+    curkey="${curkey#\"}"
+    curkey="${curkey%\"}"
+    curkey=$(echo "$curkey" | awk '{print toupper($0)}')
+    val=$(cat $configfile | jq '.global.'$el)
+    eval "GLOBAL_$curkey"="$val"
+done
 SETTAG=$TAG
 DEPLOYMENT=( TAG BRANCH SOURCE TARGET BEFOREINSTALL AFTERINSTALL )
 deploys=$(cat $configfile | jq '.deploy')
