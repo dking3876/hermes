@@ -15,7 +15,7 @@ then
         SCRIPTS+=( ${object[i]} )
     done
 fi
-tmpglobal=$(cat $configfile | jq '.global | keys[]')
+tmpglobal=$(cat $configfile | jq '.global | keys[]?')
 IFS=' ' read -r -a globals <<< $tmpglobal
 for curkey in ${globals[@]}
 do
