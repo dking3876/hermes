@@ -10,7 +10,7 @@ Currently Hermes is CLI only however I will be adding a GUI interface in the fut
 ### Installation Debian/Ubuntu
 ```
 	sudo apt-get install jq git
-	wget https://github.com/hermes-ci/hermes/archive/v1.0.9-beta.tar.gz
+	wget https://github.com/hermes-ci/hermes/archive/v1.2.90-beta.tar.gz
 	tar -xzvf v1.0.9-beta.tar.gz
     sudo chmod +x hermes-1.0.9-beta/hermes.sh
 	sudo hermes-1.0.9-beta/hermes.sh install
@@ -18,7 +18,7 @@ Currently Hermes is CLI only however I will be adding a GUI interface in the fut
 ### Installation RHEL/Fedora
 ```
 	sudo yum install jq git
-	wget https://github.com/hermes-ci/hermes/archive/v1.0.9-beta.tar.gz
+	wget https://github.com/hermes-ci/hermes/archive/v1.2.90-beta.tar.gz
 	tar -xzvf v1.0.9-beta.tar.gz
     sudo chmod +x hermes-1.0.9-beta/hermes.sh
 	sudo hermes-1.0.9-beta/hermes.sh install
@@ -92,9 +92,15 @@ sudo hermes-ci sshconfig
   ```
 
 #### auth  
-  This command will store your OAuth token for the appropriate service.  For bitbucket be sure to include the optional `--bitbucket` flag
+  This command will store your OAuth token for the appropriate service or create an ssh key for use with that service.  For bitbucket be sure to include the optional `--bitbucket` flag
+  This command can be used one of two ways
+  1. Store a OAuth Token provided to your by http://www.hermes-ci.com
   ```
   sudo hermes-ci auth --token [token] 
+  ```
+  2. Generate a ssh keyfile and upload the matching public keyfile to your service.  Enter the below command and follow the prompts
+  ```
+  sudo herme-ci auth
   ```
 
 ### Options
@@ -163,6 +169,10 @@ When saving a deployment the `-t|--tag` is required.  Hermes will match the tag 
         "npm -v",
         "grunt -v"
     ],
+    "global": {
+        "targetroot": "/var/www/html/${NAME}",
+        "siteurl": "http://hermes-ci.com"
+    },
     "deploy": [
         {
             "tag": "live",
@@ -210,6 +220,10 @@ Add the following hermes.json file to the root of your repository
     "name": "My demo",
     "account": "hermes-ci",
     "repo": "demo-application",
+    "global": {
+        "targetroot": "/var/www/html/${NAME}",
+        "siteurl": "http://hermes-ci.com"
+    },
     "deploy": [
         {
             "tag": "live",
@@ -279,13 +293,36 @@ sudo hermes-ci keygen -a bobsmith -r deployments
 sudo hermes-ci -a bobsmith -r deployments -b master -T live --auto
 ```
 
-#### Hermes Variables for available for use  
+#### Hermes Variables for available for use in your scripts/*.sh files 
 - ${HERMES_ROOT}  
 The root directory serving your deployment  
 - ${TARGET}
 The destination directory of your deployment
+- ${NAME}
+The name of your deployment
+- ${ACCOUNT}
+The account/organization
+- ${REPO}
+The repository name
+- ${TAG}
+The current tag used for deployment
 
+#### User defined variables using the ${GLOBAL} keyword
+You can define your own variables using the "global" parameter in your hermes.json file
+```json
+"global": {
+    "variable_a": "value 1",
+    "variable_b": "value 2"
+}
+```
+Once you define your variables you can use these in your scripts with the following syntax
+```bash
+${GLOBAL_VARIABLE_A}
+```
+> Your variable is converted to uppercase and appended to the 'GLOBAL' keyword followed by and underscore '_'
 
+#### User defined variables using the ${LOCAL} keyword
+> Coming soon...
 ### Hermes GUI interface
 > This is currently a work in progress and not yet fully tested feature
 
