@@ -35,4 +35,5 @@ then
 		curl -X POST -u "$Username" https://api.bitbucket.org/1.0/repositories/$ACCOUNT/$REPO/deploy-keys --data-urlencode "key=$pubKey" --data-urlencode "label=$title"
 	fi
 fi
+echo ""
 exit

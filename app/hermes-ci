@@ -75,8 +75,30 @@ case $ACTION in
 			fi
 		fi;;
 	auth)
-		echo "saving token for $SERVICE"
-		echo "$TOKEN" > $KEYS/"$SERVICE"-token.txt
+		if [ "$TOKEN" != "" ]
+		then
+			echo "saving token for $SERVICE"
+			echo "$TOKEN" > $KEYS/"$SERVICE"-token.txt
+		else
+			account_type="git"
+			if [ "$TYPE" = "BIT" ]
+				account_type="bitbucket"
+			fi
+			read -p "Hermes would like permission to access your $account_type account.Please enter your $account_type username " username
+			sudo -u hermes-ci ssh-keygen -f "$KEYS"/"$TYPE"-userkey -t rsa -P ""
+			if [ "$?" = 0 ]
+			then
+				mv "$KEYS"/"$TYPE"-userkey "$KEYS"/"$TYPE"-userkey.pem
+			fi
+			#source key
+			source "$SSHCONFIG" && ssh-add "$KEYS"/"$TYPE"-userkey.pem
+			tmp_key=$(cat "$KEYS"/"$TYPE"-userkey.pub)
+			if [ "$TYPE" = "BIT" ]
+			then
+				curl -X POST -u "$username" https://api.bitbucket.org/1.0/users/${username}/ssh-keys --data-urlencode "key=$tmp_key"
+				echo ""
+			fi
+		fi
 		exit;;
 esac
 #Check if the required parameters are set.
@@ -95,7 +117,12 @@ then
 				echo $cronjob
 				if [ "$cronjob" = "" ]
 				then
-					echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG" >> $CRONFILE
+					TYPE_FLAG=""
+					if [ "$TYPE" = "BIT" ]
+					then
+						TYPE_FLAG="--bitbucket"
+					fi
+					echo "*/2 * * * * root hermes-ci deploy --config $ACCOUNT-$REPO --tag $TAG $TYPE_FLAG" >> $CRONFILE
 				else
 					echo "Auto deploy is already set up for $ACCOUNT-$REPO with $TAG tag" 2>&1 | tee -a "$LOGS/$ACCOUNT"_"$REPO"
 				fi
