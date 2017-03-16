@@ -81,19 +81,21 @@ case $ACTION in
 			echo "$TOKEN" > $KEYS/"$SERVICE"-token.txt
 		else
 			account_type="git"
-			if [ "$TYPE" = "BIT" ]
+			if [ "$SERVICE" = "BIT" ]
+			then
 				account_type="bitbucket"
 			fi
 			read -p "Hermes would like permission to access your $account_type account.Please enter your $account_type username " username
-			sudo -u hermes-ci ssh-keygen -f "$KEYS"/"$TYPE"-userkey -t rsa -P ""
+			authkeyname="$SERVICE"-"$username"-userkey
+			sudo -u hermes-ci ssh-keygen -f "$KEYS"/"$authkeyname" -t rsa -P ""
 			if [ "$?" = 0 ]
 			then
-				mv "$KEYS"/"$TYPE"-userkey "$KEYS"/"$TYPE"-userkey.pem
+				mv "$KEYS"/"$authkeyname" "$KEYS"/"$authkeyname".pem
 			fi
 			#source key
-			source "$SSHCONFIG" && ssh-add "$KEYS"/"$TYPE"-userkey.pem
-			tmp_key=$(cat "$KEYS"/"$TYPE"-userkey.pub)
-			if [ "$TYPE" = "BIT" ]
+			source "$SSHCONFIG" && ssh-add "$KEYS"/"$authkeyname".pem
+			tmp_key=$(cat "$KEYS"/"$authkeyname".pub)
+			if [ "$SERVICE" = "BIT" ]
 			then
 				curl -X POST -u "$username" https://api.bitbucket.org/1.0/users/${username}/ssh-keys --data-urlencode "key=$tmp_key"
 				echo ""
